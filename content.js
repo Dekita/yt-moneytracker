@@ -58,7 +58,7 @@ function watPerc() {
 // populate percentage for type (sub/wat)
 function populatePerc(type, perc) {
     const text = document.createElement('small');
-    text.innerText = `${perc.toFixed(2)}%`;
+    text.innerText = `Progress: ${perc.toFixed(2)}%`;
     type.cont.append(text);
 }
 // populate total percentage
