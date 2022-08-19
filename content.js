@@ -23,9 +23,21 @@ let sub_data = null;
 let wat_data = null;
 let loaded = false;
 
+
 // main script below:
-document.addEventListener("DOMSubtreeModified", function(event) {
+document.addEventListener("DOMSubtreeModified", runPopulate);
+
+const elements = document.getElementsByClassName('style-scope ytcp-navigation-drawer');
+for (const element of elements) {
+    element.addEventListener('click', function(){
+        loaded = document.getElementById('total-perc-moneytized') !== null;
+        runPopulate();
+    });
+}
+
+function runPopulate() {
     if (loaded) return;
+    if (document.getElementById('total-perc-moneytized') !== null) return;
     sub_data = scanArea("subscriber");
     wat_data = scanArea("watch-hour");
     loaded = sub_data && wat_data;
@@ -34,7 +46,8 @@ document.addEventListener("DOMSubtreeModified", function(event) {
         populatePerc(wat_data, watPerc());
         populateTotalPerc();
     }
-});
+}
+
 // scans a given area for values
 function scanArea(area_id) {
     const area = document.getElementById(area_id);
@@ -67,6 +80,7 @@ function populateTotalPerc() {
     const div = document.createElement('div');
     div.style.color = 'rgba(255, 255, 255, 0.8)';
     div.style.paddingTop = '2rem';
+    div.id = 'total-perc-moneytized';
     const perc = (subPerc() + watPerc()) / 2;
     const text = document.createElement('h1');
     text.innerText = `${perc.toFixed(3)}% Towards Monetisation!!`;
