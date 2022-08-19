@@ -1,0 +1,17 @@
+{
+    "name": "Youtube Monetisation Tracker",
+    "description": "Easily track your youtube channels monetization progress by giving percentages for subscribers, watch hours, and both combined!!",
+    "version": "0.0.1",
+    "icons": {
+        "16": "icons/youtube-16.png",
+        "32": "icons/youtube-32.png",
+        "48": "icons/youtube-48.png",
+        "64": "icons/youtube-64.png",
+        "128": "icons/youtube-128.png"
+    },
+    "manifest_version": 3,
+    "content_scripts": [{
+        "matches": ["https://studio.youtube.com/channel/*"],
+        "js": ["content.js"]
+    }]
+  }
