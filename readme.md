@@ -11,6 +11,5 @@ This simple chrome extension watches for youtube studio pages and then modifys t
 - Enable Developer Mode (toggle switch, top right)
 - Click 'Load Unpacked' 
 - Select the folder where you extracted the zipped files. 
-- Load youtube studio and see your monetizationn progress!
+- Load youtube studio and see your monetization progress!
 
-# dekitarpg.com
