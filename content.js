@@ -97,14 +97,14 @@ class YTMoneytized {
     // total percentages:
     // 
     static async createTotPerc() {
+        const container = document.getElementsByClassName(tabl_classes)[0];
+        if (!container) return;
         this._totarea = document.createElement('div');
+        container.parentElement.parentElement.append(this._totarea);
         this._totperc = document.createElement('h1');
         this._totarea.style.color = 'rgba(255, 255, 255, 0.8)';
         this._totarea.style.paddingTop = '2rem';
         this._totarea.id = TPID;
-
-        const container = document.getElementsByClassName(tabl_classes)[0];
-        container.parentElement.parentElement.append(this._totarea);
         this._totarea.append(this._totperc);
     }
     static async updateTotPerc() {
