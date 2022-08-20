@@ -13,77 +13,124 @@
 * ============================================================================
 */
 
+// 
+// CONFIGURABLES::
+// 
+const UPDATE_FREQUENCY = 5000; // ms
+const BASIC_STRING = "Progress: {perc}%";
+const TOTAL_STRING = "{perc}% Towards Monetisation!!";
+
+// 
+// DO NOT EDIT BELOW THIS POINT UNLESS YOU KNOW WHAT YOUR DOING::
+// 
 const numreg = /\d+/;
+const TPID = 'total-perc-moneytized';
 const tabl_classes = "table-container style-scope ytpp-signup-eligibility";
 const curr_classes = "count style-scope ytpp-signup-eligibility";
 const reqr_classes = "threshold style-scope ytpp-signup-eligibility";
 const cont_classes = "text style-scope ytpp-signup-eligibility";
 
-let sub_data = null;
-let wat_data = null;
-let loaded = false;
+// 
+// YTMoneytized
+// main class to handle page element
+// 
+class YTMoneytized {
+    // 
+    // setup elements:
+    // 
+    static async setup() {
+        await this.createSubPerc();
+        await this.createWatPerc();
+        await this.createTotPerc();
+    }
+    // 
+    // update elements:
+    // 
+    static async update() {
+        if (this.needRefresh()) {
+            await this.setup();
+        }
+        await this.updateSubPerc();
+        await this.updateWatPerc();
+        await this.updateTotPerc();
+    }
+    // 
+    // check need are-add elements
+    // youtube removes them at various points, its annoying af!
+    // 
+    static needRefresh() {
+        return document.getElementById(TPID) === null;
+    }
+    // 
+    // subscriber percentages:
+    // 
+    static async createSubPerc() {
+        this._subarea = this.scanArea("subscriber");
+        this._subperc = document.createElement('small');
+        this._subarea.cont.append(this._subperc);
+    }
+    static async updateSubPerc() {
+        this._subperc.innerText = BASIC_STRING.replace('{perc}', this.sub_perc.toFixed(2));
+    }
+    static get sub_perc() {
+        const {curr, reqr} = this._subarea;
+        return Math.min(curr / reqr, 1.0) * 100;
+    }
+    // 
+    // watch percentages:
+    // 
+    static async createWatPerc() {
+        this._watarea = this.scanArea("watch-hour");
+        this._watperc = document.createElement('small');
+        this._watarea.cont.append(this._watperc);
+    }
+    static async updateWatPerc() {
+        this._watperc.innerText = BASIC_STRING.replace('{perc}', this.wat_perc.toFixed(2));
+    }
+    static get wat_perc() {
+        const {curr, reqr} = this._watarea;
+        return Math.min(curr / reqr, 1.0) * 100;
+    }
+    // 
+    // total percentages:
+    // 
+    static async createTotPerc() {
+        this._totarea = document.createElement('div');
+        this._totperc = document.createElement('h1');
+        this._totarea.style.color = 'rgba(255, 255, 255, 0.8)';
+        this._totarea.style.paddingTop = '2rem';
+        this._totarea.id = TPID;
 
-
-// main script below:
-document.addEventListener("DOMSubtreeModified", runPopulate);
-
-const elements = document.getElementsByClassName('style-scope ytcp-navigation-drawer');
-for (const element of elements) {
-    element.addEventListener('click', function(){
-        loaded = document.getElementById('total-perc-moneytized') !== null;
-        runPopulate();
-    });
-}
-
-function runPopulate() {
-    if (loaded) return;
-    if (document.getElementById('total-perc-moneytized') !== null) return;
-    sub_data = scanArea("subscriber");
-    wat_data = scanArea("watch-hour");
-    loaded = sub_data && wat_data;
-    if (loaded) {
-        populatePerc(sub_data, subPerc());
-        populatePerc(wat_data, watPerc());
-        populateTotalPerc();
+        const container = document.getElementsByClassName(tabl_classes)[0];
+        container.parentElement.parentElement.append(this._totarea);
+        this._totarea.append(this._totperc);
+    }
+    static async updateTotPerc() {
+        this._totperc.innerText = TOTAL_STRING.replace('{perc}', this.tot_perc.toFixed(3));
+    }
+    static get tot_perc() {
+        return (this.sub_perc + this.wat_perc) / 2;
+    }
+    // 
+    // scan yt page areas for data:
+    // 
+    static scanArea(area_id) {
+        const area = document.getElementById(area_id);
+        if (!area) return null;
+        const curr = area.getElementsByClassName(curr_classes)[0];
+        const reqr = area.getElementsByClassName(reqr_classes)[0];
+        return {
+            curr: Number(curr.innerText.match(numreg)),
+            reqr: Number(reqr.innerText.replace(',','').match(numreg)),
+            cont: area.getElementsByClassName(cont_classes)[0], 
+        }
     }
 }
 
-// scans a given area for values
-function scanArea(area_id) {
-    const area = document.getElementById(area_id);
-    if (!area) return null;
-    const curr = area.getElementsByClassName(curr_classes)[0];
-    const reqr = area.getElementsByClassName(reqr_classes)[0];
-    return {
-        curr: Number(curr.innerText.match(numreg)),
-        reqr: Number(reqr.innerText.replace(',','').match(numreg)),
-        cont: area.getElementsByClassName(cont_classes)[0], 
-    }
-}
-// get percentage for sub count
-function subPerc() {
-    return sub_data.curr / sub_data.reqr * 100;
-}
-// get percetnage for watch hours
-function watPerc() {
-    return wat_data.curr / wat_data.reqr * 100;
-}
-// populate percentage for type (sub/wat)
-function populatePerc(type, perc) {
-    const text = document.createElement('small');
-    text.innerText = `Progress: ${perc.toFixed(2)}%`;
-    type.cont.append(text);
-}
-// populate total percentage
-function populateTotalPerc() {
-    const container = document.getElementsByClassName(tabl_classes)[0];
-    const div = document.createElement('div');
-    div.style.color = 'rgba(255, 255, 255, 0.8)';
-    div.style.paddingTop = '2rem';
-    div.id = 'total-perc-moneytized';
-    const perc = (subPerc() + watPerc()) / 2;
-    const text = document.createElement('h1');
-    text.innerText = `${perc.toFixed(3)}% Towards Monetisation!!`;
-    container.parentElement.parentElement.append(div);
-    div.append(text);
-}
+setInterval(function loop(){
+    YTMoneytized.update();
+}, UPDATE_FREQUENCY);
+
+// 
+// END OF CODE -- dekitarpg.com
+// 
