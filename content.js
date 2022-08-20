@@ -71,6 +71,7 @@ class YTMoneytized {
         this._subarea.cont.append(this._subperc);
     }
     static async updateSubPerc() {
+        if (!this._subarea) return;
         this._subperc.innerText = BASIC_STRING.replace('{perc}', this.sub_perc.toFixed(2));
     }
     static get sub_perc() {
@@ -87,6 +88,7 @@ class YTMoneytized {
         this._watarea.cont.append(this._watperc);
     }
     static async updateWatPerc() {
+        if (!this._watarea) return;
         this._watperc.innerText = BASIC_STRING.replace('{perc}', this.wat_perc.toFixed(2));
     }
     static get wat_perc() {
@@ -108,6 +110,7 @@ class YTMoneytized {
         this._totarea.append(this._totperc);
     }
     static async updateTotPerc() {
+        if (this.needRefresh()) return;
         this._totperc.innerText = TOTAL_STRING.replace('{perc}', this.tot_perc.toFixed(3));
     }
     static get tot_perc() {
