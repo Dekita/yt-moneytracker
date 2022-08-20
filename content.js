@@ -16,7 +16,7 @@
 // 
 // CONFIGURABLES::
 // 
-const UPDATE_FREQUENCY = 5000; // ms
+const UPDATE_FREQUENCY = 2500; // ms
 const BASIC_STRING = "Progress: {perc}%";
 const TOTAL_STRING = "{perc}% Towards Monetisation!!";
 
