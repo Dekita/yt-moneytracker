@@ -66,6 +66,7 @@ class YTMoneytized {
     // 
     static async createSubPerc() {
         this._subarea = this.scanArea("subscriber");
+        if (!this._subarea) return;
         this._subperc = document.createElement('small');
         this._subarea.cont.append(this._subperc);
     }
@@ -81,6 +82,7 @@ class YTMoneytized {
     // 
     static async createWatPerc() {
         this._watarea = this.scanArea("watch-hour");
+        if (!this._watarea) return;
         this._watperc = document.createElement('small');
         this._watarea.cont.append(this._watperc);
     }
