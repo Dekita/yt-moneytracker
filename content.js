@@ -125,7 +125,7 @@ class YTMoneytized {
         const curr = area.getElementsByClassName(curr_classes)[0];
         const reqr = area.getElementsByClassName(reqr_classes)[0];
         return {
-            curr: Number(curr.innerText.match(numreg)),
+            curr: Number(curr.innerText.replace(',','').match(numreg)),
             reqr: Number(reqr.innerText.replace(',','').match(numreg)),
             cont: area.getElementsByClassName(cont_classes)[0], 
         }
